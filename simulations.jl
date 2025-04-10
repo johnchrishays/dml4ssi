@@ -75,7 +75,7 @@ function run_simulations_sb(N, T, m, n_covariates, switch_period, n_trees, max_d
         switchback_model, switchback_propensity_model = generate_models(T, m, n_covariates, switch_period; mode="switch", est_ade = false, alpha=alpha, sd_error=sd_error, n_trees=n_trees, max_depth=max_depth, eps=eps)
 
         if i == 1
-            println("Switchback model -- Out of sample:")
+            println("\nSwitchback model -- Out of sample:")
             evaluate_models(switchback_model, switchback_propensity_model; mode="switch", est_ade=false, alpha=alpha, sd_error=sd_error, eps=eps)
         end
         
@@ -201,7 +201,7 @@ function run_coverage_and_width_simulations_ade(N, sample_sizes, m, n_covariates
         plugin_std_bias_n_ade[i] = std(plugin_ade_estimates_i)
         dml_naive_std_bias_n_ade[i] = std(dml_naive_estimates_i)
     end
-    return dml_avg_bias_n_ade, ssac_avg_bias_n_ade, naive_avg_bias_n_ade, plugin_avg_bias_n_ade, dml_naive_avg_bias_n_ade, dml_coverages_n_ade, ssac_coverages_n_ade, naive_coverages_n_ade, plugin_coverages_n_ade, dml_naive_coverages_n_ade, dml_widths_n_ade, ssac_widths_n_ade, naive_widths_n_ade, plugin_widths_n_ade, dml_naive_widths_n_ade, dml_sds_ade, ssac_sds_ade, naive_sds_ade, plugin_sds_ade, dml_naive_sds_ade, dml_widths_sds_ade, ssac_widths_sds_ade, naive_widths_sds_ade, plugin_widths_sds_ade, dml_naive_widths_sds_ade, dml_std_bias_n_ade, ssac_std_bias_n_ade, naive_std_bias_n_ade, plugin_std_bias_n_ade, dml_naive_std_bias_n_ade
+    return dml_avg_bias_n_sb, naive_avg_bias_n_sb, plugin_avg_bias_n_sb, dml_naive_avg_bias_n_sb, switchback_avg_bias_n_sb, ssac_avg_bias_n_sb, dml_coverages_n_sb, naive_coverages_n_sb, plugin_coverages_n_sb, dml_naive_coverages_n_sb, switchback_coverages_n_sb, ssac_coverages_n_sb, dml_widths_n_sb, naive_widths_n_sb, plugin_widths_n_sb, dml_naive_widths_n_sb, switchback_widths_n_sb, ssac_widths_n_sb, dml_sds_n_sb, naive_sds_n_sb, plugin_sds_n_sb, dml_naive_sds_n_sb, switchback_sds_n_sb, ssac_sds_n_sb, dml_width_sds_n_sb, naive_width_sds_n_sb, plugin_width_sds_n_sb, dml_naive_width_sds_n_sb, switchback_width_sds_n_sb, ssac_width_sds_n_sb, dml_std_bias_n_sb, naive_std_bias_n_sb, plugin_std_bias_n_sb, dml_naive_std_bias_n_sb, switchback_std_bias_n_sb, ssac_std_bias_n_sb  
 end
 
 function run_coverage_and_width_simulations_sb(N, sample_sizes, m, n_covariates, switch_period, n_trees, max_depth, alpha_val, sd_error, eps)

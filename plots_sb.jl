@@ -1,4 +1,5 @@
 using ColorBrewer
+using CSV
 using Measures
 using ProgressMeter
 using Plots
@@ -33,6 +34,7 @@ if use_saved
     df = CSV.read("switchback_simulation_results.csv", DataFrame)
     switchback_estimates = df.switchback_estimates
     dml_switchback_estimates = df.dml_switchback_estimates
+    dml_naive_estimates_sb = df.dml_naive_estimates
     naive_sb_estimates = df.naive_sb_estimates
     true_gte = df.true_gte
     plugin_sb_estimates = df.plugin_sb_estimates
@@ -42,8 +44,26 @@ if use_saved
     ipw_ses = df.ipw_ses
     plugin_ses = df.plugin_ses
     dml_naive_ses = df.dml_naive_ses
+    ssac_estimates = df.ssac_estimates
+    ssac_ses = df.ssac_ses
 else
     switchback_estimates, dml_switchback_estimates, naive_sb_estimates, true_gte, plugin_sb_estimates, dml_switchback_ses, dml_naive_estimates_sb, switchback_ses, ipw_ses, plugin_ses, dml_naive_ses, ssac_estimates, ssac_ses = run_simulations_sb(N, T, m, n_covariates, switch_period, n_trees, max_depth, alpha_val, sd_error, eps)
+    results_df = DataFrame(
+        switchback_estimates = switchback_estimates,
+        dml_switchback_estimates = dml_switchback_estimates,
+        naive_sb_estimates = naive_sb_estimates,
+        true_gte = true_gte,
+        plugin_sb_estimates = plugin_sb_estimates,
+        dml_switchback_ses = dml_switchback_ses,
+        dml_naive_estimates = dml_naive_estimates_sb,
+        switchback_ses = switchback_ses,
+        ipw_ses = ipw_ses,
+        plugin_ses = plugin_ses,
+        dml_naive_ses = dml_naive_ses,
+        ssac_estimates = ssac_estimates,
+        ssac_ses = ssac_ses
+    )
+    CSV.write("switchback_simulation_results.csv", results_df)
 end
 
 # Create histogram of estimates
@@ -205,7 +225,19 @@ if use_saved
     ssac_std_bias_n_sb = df.ssac_std_bias_n_sb
     
 else
-    dml_avg_bias_n_sb, naive_avg_bias_n_sb, plugin_avg_bias_n_sb, dml_naive_avg_bias_n_sb, switchback_avg_bias_n_sb, ssac_avg_bias_n_sb, dml_coverages_n_sb, naive_coverages_n_sb, plugin_coverages_n_sb, dml_naive_coverages_n_sb, switchback_coverages_n_sb, ssac_coverages_n_sb, dml_widths_n_sb, naive_widths_n_sb, plugin_widths_n_sb, dml_naive_widths_n_sb, switchback_widths_n_sb, ssac_widths_n_sb, dml_sds_n_sb, naive_sds_n_sb, plugin_sds_n_sb, dml_naive_sds_n_sb, switchback_sds_n_sb, ssac_sds_n_sb, dml_width_sds_n_sb, naive_width_sds_n_sb, plugin_width_sds_n_sb, dml_naive_width_sds_n_sb, switchback_width_sds_n_sb, ssac_width_sds_n_sb = run_coverage_and_width_simulations_sb(N, sample_sizes, m, n_covariates, switch_period, n_trees, max_depth, alpha_val, sd_error, eps)
+    dml_avg_bias_n_sb, naive_avg_bias_n_sb, plugin_avg_bias_n_sb, dml_naive_avg_bias_n_sb, 
+    switchback_avg_bias_n_sb, ssac_avg_bias_n_sb, dml_coverages_n_sb, 
+    naive_coverages_n_sb, plugin_coverages_n_sb, 
+    dml_naive_coverages_n_sb, switchback_coverages_n_sb, ssac_coverages_n_sb, 
+    dml_widths_n_sb, naive_widths_n_sb, plugin_widths_n_sb, 
+    dml_naive_widths_n_sb, switchback_widths_n_sb, ssac_widths_n_sb, 
+    dml_sds_n_sb, naive_sds_n_sb, plugin_sds_n_sb, dml_naive_sds_n_sb, 
+    switchback_sds_n_sb, ssac_sds_n_sb, dml_width_sds_n_sb, 
+    naive_width_sds_n_sb, plugin_width_sds_n_sb, dml_naive_width_sds_n_sb, 
+    switchback_width_sds_n_sb, ssac_width_sds_n_sb, dml_std_bias_n_sb, 
+    naive_std_bias_n_sb, plugin_std_bias_n_sb, dml_naive_std_bias_n_sb, 
+    switchback_std_bias_n_sb, ssac_std_bias_n_sb = run_coverage_and_width_simulations_sb(N, sample_sizes, m, n_covariates, switch_period, n_trees, max_depth, alpha_val, sd_error, eps)
+
     results_df = DataFrame(
         dml_avg_bias_n_sb = dml_avg_bias_n_sb,
         naive_avg_bias_n_sb = naive_avg_bias_n_sb,
@@ -246,8 +278,8 @@ else
         naive_std_bias_n_sb = naive_std_bias_n_sb,
         plugin_std_bias_n_sb = plugin_std_bias_n_sb,
         dml_naive_std_bias_n_sb = dml_naive_std_bias_n_sb,
-        switchback_width_sds_n_sb = switchback_width_sds_n_sb,
-        ssac_width_sds_n_sb = ssac_width_sds_n_sb
+        switchback_std_bias_n_sb = switchback_std_bias_n_sb,
+        ssac_std_bias_n_sb = ssac_std_bias_n_sb
     )
     CSV.write("switchback_coverage_and_width_results.csv", results_df)
         

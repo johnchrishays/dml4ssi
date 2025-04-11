@@ -12,7 +12,7 @@ include("estimators.jl")
 include("ml.jl")
 include("simulations.jl")
 
-N = 1000
+N = 50000
 T = 1000
 m = 5
 n_covariates = 1
@@ -162,7 +162,7 @@ ylabel!("Density")
 
 savefig("switchback_vs_naive.svg");
 
-N = 10
+N = 1000
 T = 1000
 m = 5
 n_covariates = 1

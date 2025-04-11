@@ -14,7 +14,7 @@ include("estimators.jl")
 include("ml.jl")
 include("simulations.jl")
 
-N = 100
+N = 50000
 T = 1000
 m = 5
 n_covariates = 10
@@ -126,7 +126,7 @@ ylabel!("Density")
 xlims!(bin_lower, bin_upper)
 savefig("direct_effect.svg");
 
-N = 10
+N = 1000
 sample_sizes = Int.(round.(exp10.(range(2, 4, length=10))))
 if use_saved
     df = CSV.read("ade_coverage_and_width_results.csv", DataFrame)

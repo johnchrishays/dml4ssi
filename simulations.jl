@@ -1,4 +1,5 @@
 using ProgressMeter
+using Base.Threads
 
 n_bins = 90
 
@@ -25,7 +26,8 @@ function run_simulations_ade(N, T, m, n_covariates, switch_period, n_trees, max_
     ipw_ade_ses = zeros(N)
     dml_naive_ses = zeros(N)
 
-    @showprogress 1 "ADE simulations:" for i in 1:N
+    p = Progress(N; desc = "ADE simulations:")
+    @threads for i in 1:N
         # Train new predictor on auxiliary data for direct effect
         outcome_model, propensity_model = generate_models(T, m, n_covariates, switch_period; mode="observational", est_ade = true, alpha=alpha, sd_error=sd_error, n_trees=n_trees, max_depth=max_depth, eps=eps)
 
@@ -49,6 +51,8 @@ function run_simulations_ade(N, T, m, n_covariates, switch_period, n_trees, max_
         dml_naive_ses[i] = sqrt(ssac_var(T, dml_naive_estimates_phi) / T)
 
         ipw_ade_ses[i] = sqrt(ipw_var(D, X, Y, propensity_model, eps) / T)
+
+        next!(p)
     end
     
     return dml_ade_estimates, ipw_ade_estimates, plugin_ade_estimates, true_direct_effects, dml_ade_ses, ssac_ses, dml_naive_estimates, ipw_ade_ses, plugin_ses, dml_naive_ses
@@ -201,7 +205,7 @@ function run_coverage_and_width_simulations_ade(N, sample_sizes, m, n_covariates
         plugin_std_bias_n_ade[i] = std(plugin_ade_estimates_i)
         dml_naive_std_bias_n_ade[i] = std(dml_naive_estimates_i)
     end
-    return dml_avg_bias_n_sb, naive_avg_bias_n_sb, plugin_avg_bias_n_sb, dml_naive_avg_bias_n_sb, switchback_avg_bias_n_sb, ssac_avg_bias_n_sb, dml_coverages_n_sb, naive_coverages_n_sb, plugin_coverages_n_sb, dml_naive_coverages_n_sb, switchback_coverages_n_sb, ssac_coverages_n_sb, dml_widths_n_sb, naive_widths_n_sb, plugin_widths_n_sb, dml_naive_widths_n_sb, switchback_widths_n_sb, ssac_widths_n_sb, dml_sds_n_sb, naive_sds_n_sb, plugin_sds_n_sb, dml_naive_sds_n_sb, switchback_sds_n_sb, ssac_sds_n_sb, dml_width_sds_n_sb, naive_width_sds_n_sb, plugin_width_sds_n_sb, dml_naive_width_sds_n_sb, switchback_width_sds_n_sb, ssac_width_sds_n_sb, dml_std_bias_n_sb, naive_std_bias_n_sb, plugin_std_bias_n_sb, dml_naive_std_bias_n_sb, switchback_std_bias_n_sb, ssac_std_bias_n_sb  
+    return dml_avg_bias_n_ade, naive_avg_bias_n_ade, plugin_avg_bias_n_ade, dml_naive_avg_bias_n_ade, ssac_avg_bias_n_ade, dml_coverages_n_ade, naive_coverages_n_ade, plugin_coverages_n_ade, dml_naive_coverages_n_ade, ssac_coverages_n_ade, dml_widths_n_ade, naive_widths_n_ade, plugin_widths_n_ade, dml_naive_widths_n_ade, ssac_widths_n_ade, dml_sds_ade, naive_sds_ade, plugin_sds_ade, dml_naive_sds_ade, ssac_sds_ade, dml_widths_sds_ade, naive_widths_sds_ade, plugin_widths_sds_ade, dml_naive_widths_sds_ade, ssac_widths_sds_ade, dml_std_bias_n_ade, naive_std_bias_n_ade, plugin_std_bias_n_ade, dml_naive_std_bias_n_ade, ssac_std_bias_n_ade  
 end
 
 function run_coverage_and_width_simulations_sb(N, sample_sizes, m, n_covariates, switch_period, n_trees, max_depth, alpha_val, sd_error, eps)
